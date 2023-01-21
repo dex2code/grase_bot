@@ -141,7 +141,7 @@ def bot_wiki(message):
 @logger.catch
 def bot_wiki_parse(message):
     """
-    Функция Parse Wiki - Ищет введенное слово в википедии и возвращает значение
+    Функция Wiki_Parse - ищет введенное слово в википедии и возвращает значение
     """
     logger.info(f"Получен запрос '{message.text}' от пользователя '{message.from_user.id}'")
 
