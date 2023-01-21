@@ -19,10 +19,20 @@ except Exception as E:
 
 logger.info(f"Стартовали бота: {bot}")
 
+bot.set_my_commands([
+    telebot.types.BotCommand("/help", "Команды бота"),
+    telebot.types.BotCommand("/day",  "События дня")
+])
+
+logger.info(f"Установили команды бота.")
+
 
 @bot.message_handler(commands=["start"])
 @logger.catch
 def bot_start(message):
+    """
+    Функция Start - начало работы с ботом
+    """
     logger.info(f"- Получен запрос '{message.text}' от пользователя '{message.from_user.id}'")
 
     answer = f"Привет, <b>{message.from_user.first_name}</b> ✌ \n\nЧтобы узнать все команды бота: /help\n"
@@ -32,12 +42,15 @@ def bot_start(message):
 @bot.message_handler(commands=["help"])
 @logger.catch
 def bot_help(message):
+    """
+    Функция Help - вывод информации о боте
+    """
     logger.info(f"- Получен запрос '{message.text}' от пользователя '{message.from_user.id}'")
 
     answer = f"""
     <b>Grase BOT</b> - это умный помощник для поиска ответов на вопросы:
 
-    - События в этот день: <b>/day</b>
+    - События этого дня: <b>/day</b>
 
     - Информация в <i>Wikipedia</i>: <b>/wiki</b>
 
@@ -51,6 +64,7 @@ def bot_help(message):
 
 
 @bot.message_handler(commands=["day"])
+@logger.catch
 def day(message):
     logger.info(f"{datetime.now()} - Получен запрос '{message.text}' от пользователя '{message.from_user.id}'")
 
