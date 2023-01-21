@@ -19,6 +19,10 @@ except Exception as E:
 
 logger.info(f"Стартовали бота: {bot}")
 
+
+"""
+Устанавливаем меню бота
+"""
 bot.set_my_commands([
     telebot.types.BotCommand("/help", "Команды бота"),
     telebot.types.BotCommand("/day",  "События дня")
