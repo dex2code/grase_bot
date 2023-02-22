@@ -39,7 +39,9 @@ try:
         telebot.types.BotCommand(command="/day",    description="События дня"),
         telebot.types.BotCommand(command="/wiki",   description="Узнать значение в WikiPedia"),
         telebot.types.BotCommand(command="/tr_rus", description="Перевести на Русский"),
-        telebot.types.BotCommand(command="/tr_eng", description="Перевести на English")
+        telebot.types.BotCommand(command="/tr_eng", description="Перевести на English"),
+        telebot.types.BotCommand(command="/boring", description="Мне скучно! Что делать?"),
+        telebot.types.BotCommand(command="/yesno",  description="У меня важный вопрос! Да или Нет?")
     ])
 except Exception as E:
     logger.error(f"Ошибка при установке меню бота: 'str({E})'")
@@ -95,6 +97,10 @@ def bot_help(message):
     - Перевести на <i>Русский</i>: <b>/tr_rus</b>
 
     - Перевести на <i>English</i>: <b>/tr_eng</b>
+
+    - Мне скучно! Что делать: <b>/boring</b>
+
+    - У меня важный вопрос! <i>Да или Нет</i>: <b>/yesno</b>
 
     Связаться с создателем бота: @kmmax
     """
@@ -283,6 +289,91 @@ def bot_tr_eng_parse(message):
 
     bot.send_message(chat_id=message.chat.id, text=f"Перевод: <i>'{translated_eng}'</i>", parse_mode="html")
     bot.send_message(chat_id=message.chat.id, text=f"Перевести еще: <b>/tr_eng</b>", parse_mode="html")
+
+
+@bot.message_handler(commands=["boring"])
+@logger.catch
+def bot_boring(message):
+    """
+    Функция Boring - Ответ на вопрос, что делать, если скучно.
+    """
+    logger.info(f"Получен запрос '{message.text}' от пользователя '{message.from_user.id}'")
+
+    api_url = f"https://www.boredapi.com/api/activity/"
+
+    try:
+        api_res = requests.get(url=api_url, timeout=10)
+    except Exception as E:
+        api_res_text_eng = "<b>Ошибка!</b> Сервер недоступен!"
+        logger.error(f"Ошибка при получении данных от сервиса: ({str(E)})")
+    else:
+        if api_res and api_res.status_code == 200:
+            api_res_json = api_res.json()
+            api_res_text_eng = api_res_json["activity"]
+        else:
+            api_res_text_eng = f"<b>Ошибка!</b> Сервер вернул ошибку ({str(api_res.status_code)})!"
+
+    try:
+        api_res_text_rus = tss.google(query_text=api_res_text_eng, to_language="ru")
+    except Exception as E:
+        api_res_text_rus = ""
+        logger.error(f"Ошибка при переводе строки: ({str(E)})")
+
+    if api_res_text_rus:
+        answer = f"""
+        Вот интересное занятие, если вам скучно:
+
+        <i>{api_res_text_rus}</i>
+
+        """
+    else:
+        answer = f"""
+        Вот интересное занятие, если вам скучно (к сожалению, перевод временно не работает):
+
+        <i>{api_res_text_eng}</i>
+
+        """
+
+    bot.send_message(chat_id=message.chat.id, text=answer, parse_mode="html")
+
+    if api_res_json["link"]:
+        bot.send_message(
+            chat_id=message.chat.id,
+            text=f"Узнать больше: {api_res_json['link']}",
+            parse_mode="html"
+        )
+    
+    bot.send_message(chat_id=message.chat.id, text="Мне не подходит, что есть еще: /boring", parse_mode="html")
+
+
+@bot.message_handler(commands=["yesno"])
+@logger.catch
+def bot_yesno(message):
+    """
+    Функция YesNo - Ответ на вопрос, Да или Нет.
+    """
+    logger.info(f"Получен запрос '{message.text}' от пользователя '{message.from_user.id}'")
+
+    api_url = f"https://yesno.wtf/api"
+
+    try:
+        api_res = requests.get(url=api_url, timeout=10)
+    except Exception as E:
+        api_res_text = "<b>Ошибка!</b> Сервер недоступен!"
+        logger.error(f"Ошибка при получении данных от сервиса: ({str(E)})")
+    else:
+        if api_res and api_res.status_code == 200:
+            api_res_json = api_res.json()
+            api_res_text = api_res_json["answer"]
+            api_res_url  = api_res_json["image"]
+        else:
+            api_res_text = f"<b>Ошибка!</b> Сервер вернул ошибку ({str(api_res.status_code)})!"
+            api_res_url  = ""
+    
+    bot.send_message(chat_id=message.chat.id, text=api_res_url, parse_mode="html")
+    bot.send_message(chat_id=message.chat.id, text="Еще разок: /yesno", parse_mode="html")
+
+
 
 
 if __name__ == "__main__":

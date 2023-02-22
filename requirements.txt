@@ -1,0 +1,7 @@
+wheel
+loguru
+requests
+python-dotenv
+pyTelegramBotAPI
+translators
+Wikipedia-API
