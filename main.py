@@ -14,6 +14,7 @@ from loguru import logger
 Добавляем лог-файл
 """
 logger.add("main.log", format="{time} -- {level} -- {message}", level="DEBUG", rotation="1 week", compression="zip")
+logger.info(f"***")
 logger.info(f"Grase Telegram bot starting service...")
 
 """
