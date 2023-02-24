@@ -142,7 +142,7 @@ def day(message):
         answer = f"""
         Вот интересный факт про сегодняшний день:
 
-        <i>{api_res_text_rus}</i>
+        - <i>{api_res_text_rus}</i>
 
         Еще один факт: /day
         """
@@ -150,7 +150,7 @@ def day(message):
         answer = f"""
         Вот интересный факт про сегодняшний день (к сожалению, перевод временно не работает):
 
-        <i>{api_res_text_eng}</i>
+        - <i>{api_res_text_eng}</i>
 
         Еще один факт: /day
         """
