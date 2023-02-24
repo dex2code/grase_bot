@@ -321,7 +321,7 @@ def bot_boring(message):
 
     if api_res_text_rus:
         answer = f"""
-        Вот интересное занятие, если вам скучно:
+        - Вот интересное занятие, если вам скучно:
 
         <i>{api_res_text_rus}</i>
 
@@ -330,7 +330,7 @@ def bot_boring(message):
         answer = f"""
         Вот интересное занятие, если вам скучно (к сожалению, перевод временно не работает):
 
-        <i>{api_res_text_eng}</i>
+        - <i>{api_res_text_eng}</i>
 
         """
 
