@@ -36,13 +36,14 @@ logger.info(f"Стартовали бота: {bot}")
 """
 try:
     bot.set_my_commands([
-        telebot.types.BotCommand(command="/help",   description="Команды бота"),
-        telebot.types.BotCommand(command="/day",    description="События дня"),
-        telebot.types.BotCommand(command="/wiki",   description="Узнать значение в WikiPedia"),
-        telebot.types.BotCommand(command="/tr_rus", description="Перевести на Русский"),
-        telebot.types.BotCommand(command="/tr_eng", description="Перевести на English"),
-        telebot.types.BotCommand(command="/boring", description="Мне скучно! Что делать?"),
-        telebot.types.BotCommand(command="/yesno",  description="У меня важный вопрос! Да или Нет?")
+        telebot.types.BotCommand(command="/help",     description="Команды бота"),
+        telebot.types.BotCommand(command="/day",      description="События дня"),
+        telebot.types.BotCommand(command="/wiki",     description="Узнать значение в WikiPedia"),
+        telebot.types.BotCommand(command="/tr_rus",   description="Перевести на Русский"),
+        telebot.types.BotCommand(command="/tr_eng",   description="Перевести на English"),
+        telebot.types.BotCommand(command="/boring",   description="Мне скучно! Что делать?"),
+        telebot.types.BotCommand(command="/yesno",    description="У меня важный вопрос! Да или Нет?"),
+        telebot.types.BotCommand(command="/show_id",  description="Показать ваш ID и ID чата")
     ])
 except Exception as E:
     logger.error(f"Ошибка при установке меню бота: 'str({E})'")
@@ -102,6 +103,8 @@ def bot_help(message):
     - Мне скучно! Что делать: <b>/boring</b>
 
     - У меня важный вопрос! <i>Да или Нет</i>: <b>/yesno</b>
+
+    - Покажи мне <i>ID</i> - мой и текущего чата: <b>/show_id</b>
 
     Связаться с создателем бота: @kmmax
     """
@@ -375,6 +378,23 @@ def bot_yesno(message):
     bot.send_message(chat_id=message.chat.id, text="Еще разок: /yesno", parse_mode="html")
 
 
+@bot.message_handler(commands=["show_id"])
+@logger.catch
+def bot_show_id(message):
+    """
+    Функция Show ID - Отвечает ID пользователя и чата.
+    """
+    logger.info(f"Получен запрос '{message.text}' от пользователя '{message.from_user.id}'")
+    
+    bot.send_message(
+        chat_id=message.chat.id,
+        text=f"""
+        Ваши ID:
+        - <b>ID пользователя</b>: <i>{message.from_user.id}</i>
+        - <b>ID чата</b>: <i>{message.chat.id}</i>
+        """,
+        parse_mode="html"
+    )
 
 
 if __name__ == "__main__":
